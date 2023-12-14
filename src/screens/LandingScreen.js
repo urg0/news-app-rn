@@ -1,5 +1,14 @@
 import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+import LottiePlayer from "../components/ui/lottie-player/LottiePlayer";
 
 import Memoji from "../assets/images/test.png";
 

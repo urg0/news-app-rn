@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
 const NewsDetailsActions = () => {
+  const [likes, setLikes] = useState(4);
+
+  const toggleLikeHandler = () => {
+    setLikes((prevState) => prevState + 1);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
-        <Button title="👏🏿" />
+        <Button title="👏🏿" onPress={toggleLikeHandler} />
+        <Text style={styles.likes}>({likes})</Text>
         <Button title="💬" />
       </View>
       <View style={styles.buttonContainer}>
@@ -32,5 +39,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     marginHorizontal: 30,
+  },
+  likes: {
+    alignSelf: "center",
+    fontSize: 12,
   },
 });

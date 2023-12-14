@@ -1,41 +1,79 @@
-import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
-import test from "../assets/images/news.jpeg";
+import { useQuery } from "@tanstack/react-query";
+import { eventsUrl, fetchData } from "../utils/api.service";
+
 import NewsDetailsActions from "../components/news/NewsDetailsActions";
 import AuthorCard from "../components/ui/cards/AuthorCard";
+import Error from "../components/ui/error/Error";
+import CustomModal from "../components/ui/modal/Modal";
+import AuthorModal from "../components/author/AuthorModal";
 
-const NewsDetails = () => {
+const NewsDetails = ({ route }) => {
+  const id = route.params.newsId;
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ["news", id],
+    queryFn: () => fetchData(`${eventsUrl}/${id}`),
+    staleTime: 0,
+  });
+
   return (
-    <View style={styles.container}>
-      <Image source={test} style={styles.image} />
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid.
-        </Text>
-        <Text style={styles.article}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut
-          recusandae mollitia molestias quod eaque officia. Aliquam natus et
-          fugit quisquam?
-        </Text>
+    <ScrollView>
+      <View style={styles.container}>
+        {data && (
+          <>
+            <Image source={{ uri: data.image }} style={styles.image} />
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>{data.title}</Text>
+              <Text style={styles.article}>{data.text}</Text>
+            </View>
+            <View style={styles.authorContainer}>
+              <Pressable onPress={() => setModalVisible(true)}>
+                <AuthorCard
+                  avatar={data.avatar}
+                  fullName={data.fullName}
+                  job={data.job}
+                  date={data.date}
+                />
+              </Pressable>
+            </View>
+            <NewsDetailsActions />
+            <Text style={styles.newsInfo}>
+              {data.text}
+              {data.text}
+              {data.text}
+              {data.text}
+              {data.text}
+              {data.text}
+            </Text>
+          </>
+        )}
+        {isPending && <ActivityIndicator size="large" />}
+        {isError && <Error />}
       </View>
-      <View style={styles.authorContainer}>
-        <AuthorCard />
-      </View>
-      <NewsDetailsActions />
-      <Text style={styles.newsInfo}>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Rem doloribus
-        odit a vero, laboriosam repudiandae voluptates recusandae! Soluta quo
-        odio ducimus impedit excepturi. Ab, sapiente. Corrupti aliquam beatae
-        molestiae distinctio illum totam aperiam earum voluptatibus perspiciatis
-        id nisi ab quaerat sequi vero quia explicabo ratione alias, nihil, nam
-        autem ad dicta provident nulla? Quidem, quo corrupti? Lorem ipsum dolor
-        sit amet consectetur adipisicing elit. Quisquam officia at, quo
-        cupiditate assumenda, ex, asperiores hic rem repellat reprehenderit
-        eligendi molestias aliquid corporis repudiandae maxime ratione nesciunt.
-        Ex.
-      </Text>
-    </View>
+      <CustomModal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
+        {data && (
+          <AuthorModal
+            avatar={data.avatar}
+            fullName={data.fullName}
+            job={data.job}
+            date={data.date}
+          />
+        )}
+      </CustomModal>
+    </ScrollView>
   );
 };
 
@@ -44,11 +82,11 @@ export default NewsDetails;
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
+    marginTop: 30,
   },
   image: {
     width: 400,
     height: 200,
-    borderRadius: 8,
   },
   textContainer: {
     alignItems: "flex-start",

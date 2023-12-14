@@ -1,10 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 
-import { SvgUri } from "react-native-svg";
-import { getIconPath } from "../../../utils/utils.service";
-
-const AuthorCard = ({ avatar, fullName, job }) => {
+const AuthorModal = ({ avatar, fullName, job }) => {
   return (
     <View style={styles.container}>
       <Image source={{ uri: avatar }} style={styles.avatar} />
@@ -13,34 +10,47 @@ const AuthorCard = ({ avatar, fullName, job }) => {
         <Text style={styles.job}>{job}</Text>
       </View>
       <Text style={styles.category}>about Technology</Text>
+      <Text style={styles.info}>Birthdate: 2 April 2001</Text>
+      <Text style={styles.info}>Birth Place: New York</Text>
+      <Text style={styles.info}>Email: urguler@gmail.com</Text>
     </View>
   );
 };
 
-export default AuthorCard;
+export default AuthorModal;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
+    flex: 1,
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     marginTop: 8,
   },
   avatar: {
-    width: 20,
-    height: 20,
-    borderRadius: "50%",
+    width: 220,
+    height: 220,
+    borderRadius: "10%",
     marginRight: 6,
   },
   fullname: {
-    fontSize: 12,
+    marginTop: 30,
+    marginBottom: 10,
+
+    textAlign: "center",
+    fontSize: 32,
   },
   job: {
-    fontSize: 9,
+    fontSize: 22,
     textAlign: "center",
   },
   category: {
-    fontSize: 8.5,
+    fontSize: 18.5,
     marginLeft: 16,
+    marginBottom: 20,
+  },
+  info: {
+    fontSize: 18.5,
+    marginLeft: 16,
+    color: "#919191",
   },
 });

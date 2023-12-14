@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   Pressable,
   SafeAreaView,
@@ -8,34 +9,62 @@ import {
   TextInput,
   View,
 } from "react-native";
+
+import { useQuery } from "@tanstack/react-query";
+import { eventsUrl, fetchData } from "../utils/api.service";
+
 import NewsItem from "../components/news/NewsItem";
 
 const AllNews = ({ navigation }) => {
   const [searchInput, setSearchInput] = useState("");
 
+  const {
+    data: allNews,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ["news"],
+    queryFn: () => fetchData(eventsUrl),
+  });
+
   const searchInputChangeHandler = (inputValue) => {
     setSearchInput(inputValue);
   };
 
-  const navigateHandler = () => {
-    navigation.navigate("News Details");
+  const navigateHandler = (id) => {
+    navigation.navigate("News Details", { newsId: id });
   };
 
-  const test = [1, 2, 3, 4, 5];
+  const filteredNews = allNews?.filter((newsItem) => {
+    return newsItem.title.toLowerCase().includes(searchInput.toLowerCase());
+  });
 
   return (
     <SafeAreaView>
-      <Pressable onPress={navigateHandler}>
-        <View>
-          <TextInput
-            style={styles.input}
-            value={searchInput}
-            placeholder="Search within the latest news..."
-            onChangeText={searchInputChangeHandler}
+      <View>
+        <TextInput
+          style={styles.input}
+          value={searchInput}
+          placeholder="Search within the latest news..."
+          onChangeText={searchInputChangeHandler}
+        />
+        {filteredNews && (
+          <FlatList
+            data={filteredNews}
+            renderItem={({ item }) => (
+              <NewsItem
+                onNavigate={() => navigateHandler(item.id)}
+                newsItem={item}
+              />
+            )}
+            keyExtractor={(item) => {
+              return item.id;
+            }}
           />
-          <FlatList data={test} renderItem={() => <NewsItem />} />
-        </View>
-      </Pressable>
+        )}
+        {filteredNews?.length === 0 && <Text>No news found.</Text>}
+        {isPending && <ActivityIndicator size="large" />}
+      </View>
     </SafeAreaView>
   );
 };

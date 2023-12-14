@@ -1,22 +1,19 @@
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 
-import test from "../../assets/images/news.jpeg";
+import { dateFormatter } from "../../utils/utils.service";
 
-const NewsContent = () => {
+const NewsContent = ({ id, title, text, image, date }) => {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid.
-        </Text>
-        <Text style={styles.article}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem
-          recusandae in autem molestiae porro harum molestias saepe similique
-          quas odio!
-        </Text>
+        <Text style={styles.title}>{title}</Text>
+        <View style={styles.row}>
+          <Text style={styles.article}>•5 min read</Text>
+          <Text style={styles.article}>•{dateFormatter(date)}</Text>
+        </View>
       </View>
-      <Image source={test} style={styles.image} />
+      <Image source={{ uri: image }} style={styles.image} />
     </View>
   );
 };
@@ -28,6 +25,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
+  },
+  row: {
+    flexDirection: "row",
   },
   textContainer: {
     flex: 2,
@@ -41,11 +41,13 @@ const styles = StyleSheet.create({
   article: {
     fontSize: 10,
     fontWeight: 600,
+    marginRight: 15,
+    color: "#616161",
   },
   image: {
     flex: 1,
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     borderRadius: 4,
     marginLeft: 10,
   },
